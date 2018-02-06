@@ -8,11 +8,16 @@ public class PlayerMovement : MonoBehaviour {
     private float _Speed;
     [SerializeField]
     private float _JumpHight;
+    [SerializeField]
+    private XboxController Player;
+    [SerializeField]
+    private LayerMask _Mask;
     private Rigidbody _RigidBody;
+    private bool _IsOnGround;
 	// Use this for initialization
 	void Start () {
         _RigidBody = GetComponent<Rigidbody>();
-        
+        _Mask = ~_Mask;
 	}
 	
 	// Update is called once per frame
@@ -40,21 +45,28 @@ public class PlayerMovement : MonoBehaviour {
         //    _RigidBody.AddForce(Vector3.up * _JumpHight, ForceMode.Impulse);
         //}
 
-        transform.position += new Vector3(XCI.GetAxisRaw(XboxAxis.LeftStickX) * _Speed * Time.fixedDeltaTime, 0, XCI.GetAxisRaw(XboxAxis.LeftStickY) * _Speed * Time.fixedDeltaTime);
+        transform.position += new Vector3(XCI.GetAxisRaw(XboxAxis.LeftStickX,Player) * _Speed * Time.fixedDeltaTime, 0, XCI.GetAxisRaw(XboxAxis.LeftStickY, Player) * _Speed * Time.fixedDeltaTime);
 
-        if (XCI.GetAxisRaw(XboxAxis.RightStickX) != 0 && XCI.GetAxisRaw(XboxAxis.RightStickY) != 0)
+        if (XCI.GetAxisRaw(XboxAxis.RightStickX, Player) != 0 && XCI.GetAxisRaw(XboxAxis.RightStickY, Player) != 0)
         {
-            float horizontal = XCI.GetAxisRaw(XboxAxis.RightStickX) * Time.fixedDeltaTime;
-            float vertical = XCI.GetAxisRaw(XboxAxis.RightStickY) * Time.fixedDeltaTime;
+            float horizontal = XCI.GetAxisRaw(XboxAxis.RightStickX, Player) * Time.fixedDeltaTime;
+            float vertical = XCI.GetAxisRaw(XboxAxis.RightStickY, Player) * Time.fixedDeltaTime;
             float angle = Mathf.Atan2(vertical, horizontal) * Mathf.Rad2Deg;
 
             gameObject.transform.eulerAngles = new Vector3(0, -angle, 0);
 
         }
 
-        if (XCI.GetButtonDown(XboxButton.A))
+        if (XCI.GetButtonDown(XboxButton.A, Player) && _IsOnGround)
         {
             _RigidBody.AddForce(Vector3.up * _JumpHight, ForceMode.Impulse);
         }
+
+        if (Physics.Raycast(transform.position, Vector3.down, 0.6f, _Mask))
+        {
+            _IsOnGround = true;
+        }
+        else { _IsOnGround = false; }
+        
     }
 }
