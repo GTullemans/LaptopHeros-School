@@ -42,6 +42,7 @@ public class WaveSystem : MonoBehaviour {
 
         if (_Timer > _WaveEvery)
         {
+            _Timer = 0;
             WaveCounter += 1;
             _Modifier = 1 + (WaveCounter / 5);
             _AmountOfEnemys += 1;
@@ -56,7 +57,7 @@ public class WaveSystem : MonoBehaviour {
             }
 
 
-            _Timer = 0;
+            
         }
 
 

@@ -9,7 +9,7 @@ public class BulletPool : MonoBehaviour {
     private int _Amount;
     private GameObject[] _Pool;
         // Use this for initialization
-	void Start () {
+	void Awake() {
         _Pool = new GameObject[_Amount];
 		for(int i = 0; i < _Amount; i++)
         {

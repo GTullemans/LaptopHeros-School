@@ -12,9 +12,12 @@ public class Enemy : MonoBehaviour {
     private float _Health;
     [SerializeField]
     private float _Speed;
+    [SerializeField]
+    private float _Force;
     private float _HealthModifier =1;
     private float _SpeedModifier =1;
     private NavMeshAgent _Agent;
+    private Rigidbody _Body;
     
 	// Use this for initialization
 	void Start () {
@@ -59,5 +62,17 @@ public class Enemy : MonoBehaviour {
     public void Set_player(GameObject player)
     {
         _Player = player.transform;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+        if (collision.gameObject.tag == "Bullet")
+        {
+            _Health -= collision.gameObject.GetComponent<Bullet>().Dammage;
+            //_Body.AddForce(collision.gameObject.GetComponent<Bullet>().GetDir * _Force, ForceMode.Impulse);
+            collision.gameObject.SetActive(false);
+            
+        }
     }
 }
